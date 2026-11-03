@@ -1,3 +1,4 @@
+
 using System.Diagnostics;
 using AcxiomCRM.Data;
 using AcxiomCRM.Models;
@@ -19,6 +20,8 @@ public class HomeController : Controller
     {
         ViewBag.TotalCustomers = await _context.Customers.CountAsync();
         ViewBag.TotalLeads = await _context.Leads.CountAsync();
+        ViewBag.TotalOpportunities = await _context.Opportunities.CountAsync();
+
         return View();
     }
 
@@ -30,6 +33,9 @@ public class HomeController : Controller
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return View(new ErrorViewModel
+        {
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+        });
     }
 }
