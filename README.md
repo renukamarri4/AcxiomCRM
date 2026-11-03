@@ -32,7 +32,7 @@
 - Customer management (CRUD)
 - Lead management (CRUD)
 - Opportunity management (CRUD)
-- Follow-up management (CRUD implementation)
+- Follow-up management
 - Dashboard with database record counts
 
 ## Database
