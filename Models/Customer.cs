@@ -1,4 +1,6 @@
+
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace AcxiomCRM.Models;
 
@@ -23,6 +25,11 @@ public class Customer
 
     [StringLength(250)]
     public string Address { get; set; } = string.Empty;
+
+    // User assigned to manage this customer
+    public string? AssignedUserId { get; set; }
+
+    public IdentityUser? AssignedUser { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

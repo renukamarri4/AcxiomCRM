@@ -1,4 +1,6 @@
+
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace AcxiomCRM.Models;
 
@@ -22,6 +24,17 @@ public class Lead
 
     [Required]
     public string Status { get; set; } = "New";
+
+    [Required]
+    public string Source { get; set; } = "Website";
+
+    [Required]
+    public string Priority { get; set; } = "Medium";
+
+    // User assigned to manage this lead
+    public string? AssignedUserId { get; set; }
+
+    public IdentityUser? AssignedUser { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

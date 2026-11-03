@@ -1,52 +1,112 @@
+
 @model IEnumerable<AcxiomCRM.Models.Opportunity>
 
 @{
     ViewData["Title"] = "Opportunities";
+
+    var totalPipeline = Model
+        .Where(o => o.Stage != "Won" && o.Stage != "Lost")
+        .Sum(o => o.Amount);
+
+    var weightedPipeline = Model
+        .Where(o => o.Stage != "Won" && o.Stage != "Lost")
+        .Sum(o => o.Amount * o.Probability / 100m);
 }
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between mb-4">
-        <h2>Opportunity Management</h2>
-        <a asp-action="Create" class="btn btn-primary">+ Add Opportunity</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Opportunities</h2>
+            <p class="text-muted">Manage and track your sales opportunities.</p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Create Opportunity
+        </a>
     </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Open Pipeline Value</h6>
+                    <h3>₹@totalPipeline.ToString("N2")</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Weighted Pipeline Value</h6>
+                    <h3 class="text-success">₹@weightedPipeline.ToString("N2")</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
 
     <div class="card shadow-sm">
         <div class="card-body table-responsive">
-            <table class="table table-striped">
-                <thead>
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark">
                     <tr>
                         <th>Title</th>
                         <th>Customer</th>
                         <th>Amount</th>
                         <th>Stage</th>
+                        <th>Probability</th>
+                        <th>Expected Close Date</th>
+                        <th>Weighted Value</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    @if (!Model.Any())
+                    @foreach (var opportunity in Model)
                     {
+                        var weightedValue =
+                            opportunity.Amount * opportunity.Probability / 100m;
+
                         <tr>
-                            <td colspan="5" class="text-center">No opportunities found.</td>
+                            <td>@opportunity.Title</td>
+                            <td>@opportunity.CustomerName</td>
+                            <td>₹@opportunity.Amount.ToString("N2")</td>
+                            <td>@opportunity.Stage</td>
+                            <td>@opportunity.Probability%</td>
+                            <td>@opportunity.ExpectedCloseDate.ToString("dd-MM-yyyy")</td>
+                            <td>₹@weightedValue.ToString("N2")</td>
+                            <td>
+                                <a asp-action="Edit"
+                                   asp-route-id="@opportunity.Id"
+                                   class="btn btn-warning btn-sm">
+                                    Edit
+                                </a>
+
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                {
+                                    <a asp-action="Delete"
+                                       asp-route-id="@opportunity.Id"
+                                       class="btn btn-danger btn-sm">
+                                        Delete
+                                    </a>
+                                }
+                            </td>
                         </tr>
-                    }
-                    else
-                    {
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Title</td>
-                                <td>@item.CustomerName</td>
-                                <td>₹@item.Amount</td>
-                                <td>@item.Stage</td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                                </td>
-                            </tr>
-                        }
                     }
                 </tbody>
             </table>
+
+            @if (!Model.Any())
+            {
+                <p class="text-center text-muted mt-3">
+                    No opportunities found. Create your first opportunity.
+                </p>
+            }
         </div>
     </div>
 </div>

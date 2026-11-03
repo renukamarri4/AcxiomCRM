@@ -1,52 +1,247 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "CRM Dashboard";
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
+
     <h2 class="mb-2">CRM Dashboard</h2>
     <p class="text-muted">Welcome to AcxiomCRM. Manage your customer relationships efficiently.</p>
 
+    <!-- MAIN STATISTICS -->
     <div class="row mt-4">
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm border-primary">
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-primary h-100">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">Total Customers</h5>
+                    <h6 class="text-muted">Total Customers</h6>
                     <h2 class="text-primary">@ViewBag.TotalCustomers</h2>
-                    <a asp-controller="Customers" asp-action="Index" class="btn btn-primary btn-sm">
-                        View Customers
-                    </a>
+                    <a asp-controller="Customers" asp-action="Index" class="btn btn-primary btn-sm">View Customers</a>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm border-success">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-success h-100">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">Total Leads</h5>
+                    <h6 class="text-muted">Total Leads</h6>
                     <h2 class="text-success">@ViewBag.TotalLeads</h2>
-                    
+                    <a asp-controller="Leads" asp-action="Index" class="btn btn-success btn-sm">View Leads</a>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm border-warning">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-warning h-100">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">Total Opportunities</h5>
+                    <h6 class="text-muted">Total Opportunities</h6>
                     <h2 class="text-warning">@ViewBag.TotalOpportunities</h2>
-                    <p class="text-muted mb-0">Coming soon</p>
+                    <a asp-controller="Opportunities" asp-action="Index" class="btn btn-warning btn-sm">View Opportunities</a>
                 </div>
             </div>
         </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-info h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Open Leads</h6>
+                    <h2 class="text-info">@ViewBag.OpenLeads</h2>
+                    <p class="text-muted mb-0">Not yet converted or lost</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="card shadow-sm mt-3">
+    <!-- LEAD AND OPPORTUNITY COUNTS -->
+    <div class="row mt-2">
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Converted Leads</h6>
+                    <h3 class="text-success">@ViewBag.ConvertedLeads</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Lost Leads</h6>
+                    <h3 class="text-danger">@ViewBag.LostLeads</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Won Opportunities</h6>
+                    <h3 class="text-success">@ViewBag.WonOpportunities</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Lost Opportunities</h6>
+                    <h3 class="text-danger">@ViewBag.LostOpportunities</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- PIPELINE VALUES -->
+    <div class="row mt-2">
+
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm border-primary h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Open Pipeline Value</h6>
+                    <h2 class="text-primary">₹@(((decimal)ViewBag.OpenPipeline).ToString("N2"))</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm border-success h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Weighted Pipeline Value</h6>
+                    <h2 class="text-success">₹@(((decimal)ViewBag.WeightedPipeline).ToString("N2"))</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+    <div class="row mt-3">
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Lead Status Distribution</h5>
+                    <canvas id="leadChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5>Opportunity Pipeline</h5>
+                    <canvas id="pipelineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Monthly Won Sales - Last 6 Months</h5>
+                    <canvas id="monthlySalesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- QUICK ACTION -->
+    <div class="card shadow-sm mt-2 mb-4">
         <div class="card-body">
-            <h5>Getting Started</h5>
-            <p>Start by adding customers to your CRM system.</p>
-            <a asp-controller="Customers" asp-action="Create" class="btn btn-outline-primary">
-                + Add New Customer
+            <h5>Quick Actions</h5>
+            <p class="text-muted">Quickly add records to your CRM system.</p>
+
+            <a asp-controller="Customers" asp-action="Create" class="btn btn-outline-primary me-2 mb-2">
+                + Add Customer
+            </a>
+
+            <a asp-controller="Leads" asp-action="Create" class="btn btn-outline-success me-2 mb-2">
+                + Add Lead
+            </a>
+
+            <a asp-controller="Opportunities" asp-action="Create" class="btn btn-outline-warning mb-2">
+                + Add Opportunity
             </a>
         </div>
     </div>
+
 </div>
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const leadLabels = @Html.Raw(ViewBag.LeadChartLabels);
+        const leadValues = @Html.Raw(ViewBag.LeadChartValues);
+
+        const pipelineLabels = @Html.Raw(ViewBag.PipelineChartLabels);
+        const pipelineValues = @Html.Raw(ViewBag.PipelineChartValues);
+
+        const monthlyLabels = @Html.Raw(ViewBag.MonthlySalesLabels);
+        const monthlyValues = @Html.Raw(ViewBag.MonthlySalesValues);
+
+        new Chart(document.getElementById('leadChart'), {
+            type: 'doughnut',
+            data: {
+                labels: leadLabels,
+                datasets: [{
+                    label: 'Number of Leads',
+                    data: leadValues
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('pipelineChart'), {
+            type: 'bar',
+            data: {
+                labels: pipelineLabels,
+                datasets: [{
+                    label: 'Pipeline Amount (₹)',
+                    data: pipelineValues
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('monthlySalesChart'), {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [{
+                    label: 'Won Sales (₹)',
+                    data: monthlyValues,
+                    tension: 0.3,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

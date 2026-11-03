@@ -1,3 +1,4 @@
+
 @model IEnumerable<AcxiomCRM.Models.Lead>
 
 @{
@@ -5,30 +6,76 @@
 }
 
 <div class="container mt-4">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Lead Management</h2>
-        <a asp-action="Create" class="btn btn-primary">+ Add Lead</a>
+        <div>
+            <h2>Lead Management</h2>
+            <p class="text-muted">Track leads, priorities and assignments.</p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Add Lead
+        </a>
     </div>
 
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text"
+                   name="search"
+                   value="@ViewBag.Search"
+                   class="form-control"
+                   placeholder="Search by name, email or company..." />
+
+            <button type="submit" class="btn btn-outline-primary">
+                Search
+            </button>
+
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                Clear
+            </a>
+        </div>
+    </form>
+
     <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Company</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        <div class="card-body table-responsive">
+
+            <table class="table table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Company</th>
+                        <th>Status</th>
+                        <th>Source</th>
+                        <th>Priority</th>
+                        <th>Assigned User</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
                     @if (!Model.Any())
                     {
                         <tr>
-                            <td colspan="6" class="text-center">No leads found.</td>
+                            <td colspan="9" class="text-center">
+                                No leads found.
+                            </td>
                         </tr>
                     }
                     else
@@ -40,19 +87,86 @@
                                 <td>@lead.Email</td>
                                 <td>@lead.Phone</td>
                                 <td>@lead.Company</td>
-                                <td>@lead.Status</td>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@lead.Id"
-                                       class="btn btn-sm btn-warning">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@lead.Id"
-                                       class="btn btn-sm btn-danger">Delete</a>
+                                    @if (lead.Status == "Converted")
+                                    {
+                                        <span class="badge bg-success">Converted</span>
+                                    }
+                                    else
+                                    {
+                                        @lead.Status
+                                    }
+                                </td>
+                                <td>@lead.Source</td>
+
+                                <td>
+                                    @if (lead.Priority == "High")
+                                    {
+                                        <span class="badge bg-danger">High</span>
+                                    }
+                                    else if (lead.Priority == "Medium")
+                                    {
+                                        <span class="badge bg-warning text-dark">Medium</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Low</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (lead.AssignedUser != null)
+                                    {
+                                        <span class="badge bg-info text-dark">
+                                            @lead.AssignedUser.Email
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Not assigned</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="d-flex gap-1 flex-wrap">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@lead.Id"
+                                           class="btn btn-sm btn-warning">
+                                            Edit
+                                        </a>
+
+                                        @if (lead.Status != "Converted")
+                                        {
+                                            <form asp-action="Convert"
+                                                  asp-route-id="@lead.Id"
+                                                  method="post">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-success"
+                                                        onclick="return confirm('Convert this lead into a customer?');">
+                                                    Convert
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                        {
+                                            <a asp-action="Delete"
+                                               asp-route-id="@lead.Id"
+                                               class="btn btn-sm btn-danger">
+                                                Delete
+                                            </a>
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         }
                     }
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+
+            </table>
         </div>
     </div>
 </div>

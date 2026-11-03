@@ -28,6 +28,9 @@ namespace AcxiomCRM.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("AssignedUserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Company")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -50,6 +53,8 @@ namespace AcxiomCRM.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedUserId");
 
                     b.ToTable("Customers");
                 });
@@ -86,6 +91,9 @@ namespace AcxiomCRM.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AssignedUserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Company")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -107,11 +115,21 @@ namespace AcxiomCRM.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedUserId");
 
                     b.ToTable("Leads");
                 });
@@ -132,6 +150,12 @@ namespace AcxiomCRM.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpectedCloseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Probability")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Stage")
                         .IsRequired()
@@ -341,6 +365,24 @@ namespace AcxiomCRM.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("AcxiomCRM.Models.Customer", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "AssignedUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedUserId");
+
+                    b.Navigation("AssignedUser");
+                });
+
+            modelBuilder.Entity("AcxiomCRM.Models.Lead", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "AssignedUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedUserId");
+
+                    b.Navigation("AssignedUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
