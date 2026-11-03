@@ -54,6 +54,32 @@ namespace AcxiomCRM.Data.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("AcxiomCRM.Models.FollowUp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("FollowUpDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FollowUps");
+                });
+
             modelBuilder.Entity("AcxiomCRM.Models.Lead", b =>
                 {
                     b.Property<int>("Id")

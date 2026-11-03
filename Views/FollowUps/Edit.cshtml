@@ -1,0 +1,31 @@
+
+@model AcxiomCRM.Models.FollowUp
+
+<h1>Edit Follow-up</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label asp-for="CustomerName"></label>
+        <input asp-for="CustomerName" class="form-control" />
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+        <label asp-for="FollowUpDate"></label>
+        <input asp-for="FollowUpDate" type="date" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Status"></label>
+        <select asp-for="Status" class="form-control">
+            <option>Pending</option>
+            <option>Completed</option>
+            <option>Cancelled</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
