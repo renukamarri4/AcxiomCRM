@@ -1,8 +1,52 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "CRM Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <h2 class="mb-2">CRM Dashboard</h2>
+    <p class="text-muted">Welcome to AcxiomCRM. Manage your customer relationships efficiently.</p>
+
+    <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm border-primary">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Total Customers</h5>
+                    <h2 class="text-primary">@ViewBag.TotalCustomers</h2>
+                    <a asp-controller="Customers" asp-action="Index" class="btn btn-primary btn-sm">
+                        View Customers
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Total Leads</h5>
+                    <h2 class="text-success">@ViewBag.TotalLeads</h2>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Total Opportunities</h5>
+                    <h2 class="text-warning">0</h2>
+                    <p class="text-muted mb-0">Coming soon</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
+            <h5>Getting Started</h5>
+            <p>Start by adding customers to your CRM system.</p>
+            <a asp-controller="Customers" asp-action="Create" class="btn btn-outline-primary">
+                + Add New Customer
+            </a>
+        </div>
+    </div>
 </div>

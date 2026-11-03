@@ -1,13 +1,24 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+using AcxiomCRM.Data;
 using AcxiomCRM.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AcxiomCRM.Controllers;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    private readonly ApplicationDbContext _context;
+
+    public HomeController(ApplicationDbContext context)
     {
+        _context = context;
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        ViewBag.TotalCustomers = await _context.Customers.CountAsync();
+        ViewBag.TotalLeads = await _context.Leads.CountAsync();
         return View();
     }
 
